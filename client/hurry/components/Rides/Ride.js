@@ -6,6 +6,7 @@ import RideContext from  "../../context/rideContext";
 const Ride = ({ rideData }) => {
   const { car, driver, eta, passenger, price, raiting, vendor } = rideData[0];
 
+  // temp
   return (
     <View style={styles.rideContainer}>
       <View style={styles.headingContainer}>
