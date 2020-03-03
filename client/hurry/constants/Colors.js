@@ -5,7 +5,7 @@ export default {
   darkBlue: '#1A172D',
   bgBlue: '#272343',
   green: '#3BEAE5',
-  lightPurple: '#3BEAE5',
+  lightPurple: '#4F4882',
   tintColor,
   tabIconDefault: '#ccc',
   tabIconSelected: tintColor,
