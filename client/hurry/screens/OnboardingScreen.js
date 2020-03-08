@@ -106,8 +106,8 @@ const OnboardingScreen = () => {
     });
   };
 
-  const selectVendor = () => {
-    console.log("Selected Vendor");
+  const selectVendor = (vendor) => {
+    console.log("Selected Vendor", vendor);
   };
 
   return (
@@ -142,9 +142,6 @@ const OnboardingScreen = () => {
               const start = i * delta;
               const end = start + delta;
 
-              console.log('__________________');
-              console.log('Start: ', start, 'End: ', end);
-
               const opacity = interpolate(progress, {
                 inputRange: [start, end],
                 outputRange: [0, 1],
@@ -162,7 +159,7 @@ const OnboardingScreen = () => {
                   key={i}
                   style={[styles.animatedBubble, { opacity, transform: [{ scale, translateX: vendorName.pos[0], translateY: vendorName.pos[1] }] }]}
                 >
-                  <Bubble vendor={vendorName.vendorName} />
+                  <Bubble vendor={vendorName.vendorName} onPress={() => selectVendor(vendorName.vendorName)} />
                 </Animated.View>
               );
             })}
