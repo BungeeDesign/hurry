@@ -4,8 +4,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import HeaderText from "../components/Layout/HeaderText";
 import Ride from '../components/Rides/Ride';
 
-export default function RidesScreen() {
-
+const RidesScreen = ()  => {
   const tempRideData = [
     {
       id: 0,
@@ -103,3 +102,5 @@ const styles = StyleSheet.create({
     // flex: 1
   }
 });
+
+export default RidesScreen;

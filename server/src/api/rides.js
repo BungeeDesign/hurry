@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const ride = require('../models/rides');
+const findRides = require('../services/findRides');
 const router = Router();
 
 // @route   GET api/rides
@@ -22,6 +23,21 @@ router.post('/new', async (req, res, next) => {
     const rides = new ride(req.body);
     const createdRide = await rides.save();
     res.json(createdRide);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      res.status(422);
+    }
+    next(error);
+  }
+});
+
+// @route   POST api/rides/find
+// @desc    Finds rides
+// @access  Private
+router.post('/find', async (req, res, next) => {
+  try {
+    const rides = await findRides(req.body);
+    res.json(rides);
   } catch (error) {
     if (error.name === 'ValidationError') {
       res.status(422);

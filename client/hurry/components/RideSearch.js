@@ -3,20 +3,20 @@ import Colors from "../constants/Colors";
 import HeaderText from "../components/Layout/HeaderText";
 import { StyleSheet, View, Text, TextInput, TouchableNativeFeedback } from 'react-native';
 import RideContext from  "../context/rideContext";
-// import { useNavigation } from '@react-navigation/native';
 
 const RideSearch = ({ navigation }) => {
-  // const navigation = useNavigation();
-  const { getLocation, getDestination } = useContext(RideContext);
+  const { getLocation, getDestination, fromLocation, userDestination } = useContext(RideContext);
   const [userFromLocation, setUserFromLocation] = useState();
   const [userEnteredDestination, setUserDestination] = useState();
 
   const getEnteredUserLocation = () => {
     getLocation(userFromLocation);
+    console.log('FROM LOCATION: ', fromLocation);
   };
 
   const setEnteredUserDestination = () => {
     getDestination(userEnteredDestination);
+    console.log('DESTINATION: ', userDestination);
   };
 
   const findRide = () => {
