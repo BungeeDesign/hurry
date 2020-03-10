@@ -23,6 +23,7 @@ const MapView = ({ location }) => {
 
   return (
     <View style={styles.mapContainer}>
+      {/* <View style={styles.mapPlaceholder}></View> */}
         <Map
         region={{
           latitude: fromLocation.latitude,
@@ -48,7 +49,7 @@ const MapView = ({ location }) => {
             apikey={Config.GOOGLE_MAPS_APIKEY}
             strokeWidth={4}
             strokeColor={Colors.green}
-          >
+            >
           </MapViewDirections>
         </Map>
     </View>
@@ -64,6 +65,13 @@ const styles = StyleSheet.create({
     marginTop: 300,
     height: 450,
   },
+  mapPlaceholder: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    marginTop: 350,
+    height: 850,
+    backgroundColor: 'red'
+  }
 });
 
 const generatedMapStyle = [

@@ -1,2 +1,3 @@
 export const GET_LOCATION = 'GET_LOCATION';
 export const GET_DESTINATION = 'GET_DESTINATION';
+export const SAVE_USER_APPS = 'SAVE_USER_APPS';

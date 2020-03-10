@@ -1,17 +1,19 @@
-import React, { useRef } from "react";
+import React, { useRef, useContext } from "react";
 import Colors from "../constants/Colors";
 import {
-  FlatList,
   StyleSheet,
   View,
   Text,
   ScrollView,
-  Dimensions
+  Dimensions,
+  Alert
 } from "react-native";
 import Logo from "../components/Layout/Logo";
 import Bubble from "../components/Onboarding/Bubble";
 import NextButton from "../components/Layout/NextButton";
 import Animated, { Easing } from "react-native-reanimated";
+import RideContext from  "../context/rideContext";
+import { useMemoOne  } from "use-memo-one";
 
 const {
   Value,
@@ -63,7 +65,8 @@ const runTiming = (clock) => {
   ]);
 };
 
-const OnboardingScreen = () => {
+const OnboardingScreen = ({navigation}) => {
+  const { userApps } = useContext(RideContext);
   const scrollRef = useRef();
 
   const vendors = [
@@ -83,10 +86,18 @@ const OnboardingScreen = () => {
 
   // Bubble Animation
   // Using react-native-reanimated due to it running on the UI Thread thus it being more performant (Declarative API), this means declarations will be used e.g. instead of if - cond()
-  const progress = new Value(0);
+  
   const delta = 1 / vendors.length;
-  const clock = new Clock();
-  const isPlaying = 1;
+
+  // Using useMemo due the context change render which would cause the reanimated animation to replay
+  const { clock, isPlaying, progress } = useMemoOne(
+    () => ({
+      clock: new Clock(),
+      isPlaying: new Value(1),
+      progress: new Value(0)
+    }),
+    []
+  );
 
   useCode(
     () =>
@@ -106,9 +117,29 @@ const OnboardingScreen = () => {
     });
   };
 
-  const selectVendor = (vendor) => {
-    console.log("Selected Vendor", vendor);
-  };
+  const onComplete = () => {
+    console.log(userApps);
+    if (userApps === undefined || userApps.length == 0) {
+      Alert.alert(
+        'Select an app',
+        'Please select at least 1 app',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        {cancelable: false},
+      );
+    } else {
+      scrollRef.current.scrollTo({
+        animated: true,
+        x: deviceWidth * 2,
+        y: 0
+      });
+
+      setTimeout(() => {
+        navigation.navigate('FindRidesScreen', {name: 'Jane'});
+      }, 1000);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -166,8 +197,16 @@ const OnboardingScreen = () => {
 
             </View>
             <View style={styles.sectionActions}>
-              <NextButton onPress={onNext} />
+              <NextButton onPress={onComplete} />
             </View>
+          </View>
+        </View>
+
+        <View style={styles.onboardSection}>
+          <View style={styles.sectionContainer}>
+            <Text style={styles.bodyText}>
+              You can now start using Hurry! 🚗
+            </Text>
           </View>
         </View>
       </ScrollView>

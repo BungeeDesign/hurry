@@ -1,14 +1,31 @@
-import React from 'react';
-import Map from 'react-native-maps';
+import React, { useState, useContext } from 'react';
 import Colors from "../../constants/Colors";
-import { StyleSheet, View, Text, TouchableNativeFeedback } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { StyleSheet, View, Text, TouchableNativeFeedback, AsyncStorage } from 'react-native';
+import RideContext from  "../../context/rideContext";
 
-const Bubble = ({onPress, vendor}) => {
+let apps = [];
+
+const Bubble = ({vendor, onPress}) => {
+  const [isVendorSelected, setisVendorSelected] = useState(false);
+  const { saveUserApps } = useContext(RideContext);
+
+  const handleSelect = async () => {
+    apps.push(vendor);
+    if (isVendorSelected) {
+      // Remove app if the user unselects
+      apps = apps.filter(e => e !== vendor);
+    }
+
+    // Call saveUserApps from context
+    saveUserApps(apps);
+
+    // Set the pressed bubble to its selected state
+    setisVendorSelected(!isVendorSelected);
+  };
 
   return (
-    <TouchableNativeFeedback style={styles.nativeFeedback} useForeground={true}  background={TouchableNativeFeedback.Ripple(Colors.bgBlue, false)} onPress={onPress}>
-      <View style={styles.circle}>
+    <TouchableNativeFeedback style={styles.nativeFeedback} useForeground={true}  background={TouchableNativeFeedback.Ripple(Colors.bgBlue, false)} onPress={onPress, handleSelect}>
+      <View style={{...styles.circle, backgroundColor: isVendorSelected ? Colors.green : Colors.bgBlue}}>
         <Text style={styles.circleText}>{vendor}</Text>
       </View>
     </TouchableNativeFeedback>
@@ -24,7 +41,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.green
+    backgroundColor: Colors.bgBlue
   },
   circleText: {
     fontFamily: "source-sans-pro",

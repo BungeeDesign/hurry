@@ -1,6 +1,7 @@
 import {
   GET_LOCATION,
   GET_DESTINATION,
+  SAVE_USER_APPS
 } from './types';
 
 export default (state, action) => {
@@ -14,6 +15,11 @@ export default (state, action) => {
       return {
         ...state,
         userDestination: action.payload.data[0]
+      };
+    case SAVE_USER_APPS:
+      return {
+        ...state,
+        userApps: action.payload
       };
   }
 }
