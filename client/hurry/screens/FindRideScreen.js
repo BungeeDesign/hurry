@@ -11,34 +11,19 @@ import hurryLoader from '../assets/animations/hurry-loader.gif';
 const FindRideScreen = (props) => {
   const { navigation } = props;
   // State
-  const [userLocation, setUserLocation] = useState(null);
-  const { fromLocation } = useContext(RideContext);
+  // const [userLocation, setUserLocation] = useState(null);
+  const { fromLocation, setLocation } = useContext(RideContext);
 
   useEffect(() => {
-    console.log('Find Ride', userLocation);
+    // console.log('Find Ride', userLocation);
     console.log(fromLocation);
-    getLocation();
   }, []);
-
-  // Get Location
-  const getLocation = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-
-    if (status !== 'granted') {
-      console.log('Permission to location access was denied.');
-    }
-
-    console.log('Getting Location....');
-    let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-    console.log('Got Location....');
-    setUserLocation(location);
-  }
 
   return (
     <View style={styles.container}>
       <RideSearch navigation={navigation} />
-      { userLocation != null ? (
-        <MapView location={userLocation}/>
+      { fromLocation != null ? (
+        <MapView />
           ) : (
           <View style={styles.loadingContainer}>
             <View style={styles.loadingView}>

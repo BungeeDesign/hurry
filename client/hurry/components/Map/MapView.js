@@ -8,26 +8,23 @@ import LocationMarker from '../Map/LocationMarker';
 import RideContext from  "../../context/rideContext";
 
 const MapView = ({ location }) => {
-  const { latitude, longitude } = location.coords;
   const { fromLocation, userDestination } = useContext(RideContext);
 
-  let origin = { latitude: fromLocation.latitude, longitude: fromLocation.longitude };
-  if (fromLocation.length <= 0) {
-    origin = { latitude: latitude, longitude: longitude };
-  }
+  // console.log('From Location Change: ', fromLocation);
 
+  let origin = { latitude: fromLocation.coords.latitude, longitude: fromLocation.coords.latitude };
   let destination = { latitude: userDestination.latitude, longitude: userDestination.longitude };
-  if (userDestination.length <= 0) {
-    destination = { latitude: 0, longitude: 0 };
-  }
+  console.log('[Context API Destination] - ', destination)
+
+  console.log('[Context API Location] - ', fromLocation.coords.latitude);
 
   return (
     <View style={styles.mapContainer}>
-      {/* <View style={styles.mapPlaceholder}></View> */}
+      <View style={styles.mapPlaceholder}></View>
         <Map
         region={{
-          latitude: fromLocation.latitude,
-          longitude: fromLocation.longitude,
+          latitude: origin.latitude,
+          longitude: origin.longitude,
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
         }} 
@@ -35,14 +32,15 @@ const MapView = ({ location }) => {
         provider={ PROVIDER_GOOGLE }
         customMapStyle={generatedMapStyle}
         initialRegion={{
-          latitude: 50.816218,
-          longitude: -0.359450,
+          latitude: origin.latitude,
+          longitude: origin.longitude,
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
         }}> 
         <Map.Marker coordinate={origin} anchor={{x: 0.5, y: 0.5}}>
           <LocationMarker />
         </Map.Marker>
+        { userDestination.latitude != undefined && 
           <MapViewDirections
             origin={origin}
             destination={destination}
@@ -51,6 +49,7 @@ const MapView = ({ location }) => {
             strokeColor={Colors.green}
             >
           </MapViewDirections>
+        }
         </Map>
     </View>
   )
@@ -62,15 +61,14 @@ const styles = StyleSheet.create({
   },
   mapStyle: {
     width: Dimensions.get('window').width,
-    marginTop: 300,
+    marginTop: 0,
     height: 450,
   },
   mapPlaceholder: {
     flex: 1,
     width: Dimensions.get('window').width,
     marginTop: 350,
-    height: 850,
-    backgroundColor: 'red'
+    height: 850
   }
 });
 

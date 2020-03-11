@@ -1,4 +1,4 @@
-import React, { useRef, useContext } from "react";
+import React, { useRef, useContext, useEffect } from "react";
 import Colors from "../constants/Colors";
 import {
   StyleSheet,
@@ -8,6 +8,8 @@ import {
   Dimensions,
   Alert
 } from "react-native";
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 import Logo from "../components/Layout/Logo";
 import Bubble from "../components/Onboarding/Bubble";
 import NextButton from "../components/Layout/NextButton";
@@ -29,7 +31,6 @@ const {
   stopClock,
   Extrapolate,
   interpolate,
-  add,
   eq,
   timing
 } = Animated;
@@ -66,7 +67,11 @@ const runTiming = (clock) => {
 };
 
 const OnboardingScreen = ({navigation}) => {
-  const { userApps } = useContext(RideContext);
+  useEffect(() => {
+    getLocation();
+  }, []);
+
+  const { userApps, setLocation } = useContext(RideContext);
   const scrollRef = useRef();
 
   const vendors = [
@@ -84,9 +89,7 @@ const OnboardingScreen = ({navigation}) => {
     },
 ];
 
-  // Bubble Animation
-  // Using react-native-reanimated due to it running on the UI Thread thus it being more performant (Declarative API), this means declarations will be used e.g. instead of if - cond()
-  
+  // Bubble Animation - Using react-native-reanimated due to it running on the UI Thread thus it being more performant (Declarative API), this means declarations will be used e.g. instead of if - cond()
   const delta = 1 / vendors.length;
 
   // Using useMemo due the context change render which would cause the reanimated animation to replay
@@ -139,7 +142,21 @@ const OnboardingScreen = ({navigation}) => {
         navigation.navigate('FindRidesScreen', {name: 'Jane'});
       }, 1000);
     }
-  }
+  };
+
+  // Get Location
+  const getLocation = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+    if (status !== 'granted') {
+      console.log('Permission to location access was denied.');
+    }
+
+    console.log('Getting Location....');
+    let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+    console.log('Got Location....', location);
+    setLocation(location);
+  };
 
   return (
     <View style={styles.container}>
