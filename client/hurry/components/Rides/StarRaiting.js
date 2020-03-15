@@ -4,11 +4,10 @@ import { StyleSheet, View, Text } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 const StarRaiting = ({ raiting }) => {
-  // Potential Refactor - Move the mapping before the return statement? 
   return (
     <View style={styles.raitingContainer}>
       {[...Array(raiting)].map((e, i) => {
-        return (<AntDesign name="star" size={15} color={Colors.lightPurple} />);
+        return (<AntDesign key={i} name="star" size={15} color={Colors.lightPurple} />);
       })}
       <View style={styles.placeHolderRaitings}>
         <AntDesign name="star" size={15} color={Colors.lightPurple} />

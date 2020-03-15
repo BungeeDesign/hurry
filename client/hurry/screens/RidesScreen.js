@@ -77,7 +77,7 @@ const RidesScreen = ()  => {
   return (
     <View style={styles.container}>
       <HeaderText title='Rides' />
-      <FlatList style={styles.rides} data={tempRideData} renderItem={({item}) => <Ride rideData={item}/> } keyExtractor={item => item.id} />
+      <FlatList style={styles.rides} data={tempRideData} renderItem={({item}) => <Ride rideData={item}/> } keyExtractor={item => item.id.toString()} />
     </View>
   );
 }

@@ -12,8 +12,12 @@ const MapView = ({ location }) => {
 
   // console.log('From Location Change: ', fromLocation);
 
-  let origin = { latitude: fromLocation.coords.latitude, longitude: fromLocation.coords.latitude };
-  let destination = { latitude: userDestination.latitude, longitude: userDestination.longitude };
+  const { latitude, longitude } = fromLocation.coords;
+
+  console.log('Lat Long ----> ', latitude, longitude);
+  
+  let origin = { latitude: latitude, longitude: longitude };
+  let destination = { latitude: 50.822300, longitude: -0.321530 };
   console.log('[Context API Destination] - ', destination)
 
   console.log('[Context API Location] - ', fromLocation.coords.latitude);
@@ -47,6 +51,9 @@ const MapView = ({ location }) => {
             apikey={Config.GOOGLE_MAPS_APIKEY}
             strokeWidth={4}
             strokeColor={Colors.green}
+            onError={(errorMessage) => {
+              console.log('GOT AN ERROR', errorMessage);
+            }}
             >
           </MapViewDirections>
         }
