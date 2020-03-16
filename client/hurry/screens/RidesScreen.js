@@ -1,83 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Colors from "../constants/Colors";
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View, AsyncStorage } from 'react-native';
+import axios from 'axios';
 import HeaderText from "../components/Layout/HeaderText";
 import Ride from '../components/Rides/Ride';
+import RideContext from  "../context/rideContext";
+import Loader from '../components/Layout/Loader';
 
 const RidesScreen = ()  => {
-  const tempRideData = [
-    {
-      id: 0,
-      vendor: 'Uber',
-      eta: '8',
-      price: '£15.00',
-      car: 'Tesla Model S',
-      passenger: 4,
-      driver: 'Ranjit',
-      raiting: 3,
-      fastest: true
-    },
-    {
-      id: 1,
-      vendor: 'Uber',
-      eta: '8',
-      price: '£15.00',
-      car: 'Tesla Model S',
-      passenger: 4,
-      driver: 'Ranjit',
-      raiting: 1,
-      fastest: false
-    },
-    {
-      id: 2,
-      vendor: 'Uber',
-      eta: '8',
-      price: '£15.00',
-      car: 'Tesla Model S',
-      passenger: 4,
-      driver: 'Ranjit',
-      raiting: 3,
-      fastest: false
-    },
-    {
-      id: 3,
-      vendor: 'Uber',
-      eta: '8',
-      price: '£15.00',
-      car: 'Tesla Model S',
-      passenger: 4,
-      driver: 'Ranjit',
-      raiting: 3,
-      fastest: false
-    },
-    {
-      id: 4,
-      vendor: 'Uber',
-      eta: '8',
-      price: '£15.00',
-      car: 'Tesla Model S',
-      passenger: 4,
-      driver: 'Ranjit',
-      raiting: 3,
-      fastest: false
-    },
-    {
-      id: 5,
-      vendor: 'Uber',
-      eta: '8',
-      price: '£15.00',
-      car: 'Tesla Model S',
-      passenger: 4,
-      driver: 'Ranjit',
-      raiting: 3,
-      fastest: false
-    },
-  ];
+  const { fromLocation, userDestination } = useContext(RideContext);
+  [rides, setRides] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const data = {
+        "vendors": await AsyncStorage.getItem('userApps'),
+        "ride": {
+            "currentLocation": {
+                "lat": fromLocation.coords.latitude,
+                "long": fromLocation.coords.longitude
+            },
+            "destinationLocation": {
+                "lat": userDestination.latitude,
+                "long": userDestination.longitude
+            }
+        }
+      };
+
+      try {
+        const res = await axios.post('http://192.168.1.59:1255/api/rides/find', data);
+        setRides(res.data);
+      } catch (error) {
+        console.log('[Rides Request Error] -', error);
+      }
+    })();
+  }, [])
 
   return (
     <View style={styles.container}>
       <HeaderText title='Rides' />
-      <FlatList style={styles.rides} data={tempRideData} renderItem={({item}) => <Ride rideData={item}/> } keyExtractor={item => item.id.toString()} />
+      {rides.length != 0 ? (
+        <FlatList style={styles.rides} data={rides} renderItem={({item}) => <Ride rideData={item}/> } keyExtractor={item => item.id.toString()} />
+      ) : (
+        <Loader />
+      )}
     </View>
   );
 }

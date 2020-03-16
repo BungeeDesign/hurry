@@ -60,6 +60,7 @@ const RideState = props => {
   const getDestination = async (destination) => {
     try {
       const res = await axios(`http://api.positionstack.com/v1/forward?access_key=${Config.POSITION_STACK_KEY}&query=${destination}`);
+      console.log('Dest: ', res.data);
       dispatch({
         type: GET_DESTINATION,
         payload: res.data

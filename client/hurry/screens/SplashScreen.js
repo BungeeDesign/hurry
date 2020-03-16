@@ -8,7 +8,7 @@ import hurryLoader from '../assets/animations/hurry-loader.gif';
 const Splash = ({ navigation }) => {
     const [isReady, setReady] = useState(false);
 
-    const  _cacheResourcesAsync = async () => {
+    const _cacheResourcesAsync = async () => {
       const images = [require('../assets/images/gradient.png')];
 
       const cacheImages = images.map(image => {

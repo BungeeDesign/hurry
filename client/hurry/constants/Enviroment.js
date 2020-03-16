@@ -6,7 +6,8 @@ const localhost = Platform.OS === 'ios' ? 'http://localhost:4000/' : 'http://10.
 const environments = {
   dev: {
     POSITION_STACK_KEY: 'e194bcb9355545eabb6306686e371683',
-    GOOGLE_MAPS_APIKEY: 'AIzaSyDZbHGS6FS7igu96wVvNWfqbh9sHUG69VE'
+    GOOGLE_MAPS_APIKEY: 'AIzaSyDZbHGS6FS7igu96wVvNWfqbh9sHUG69VE',
+    UBER_CLIENT_ID: 'y5ZLmLPGcC_C7VtpmMH9COQu_IZ_HbrN'
   },
   staging: {
     apiUrl: 'https://your-staging-api-url-here.com/'

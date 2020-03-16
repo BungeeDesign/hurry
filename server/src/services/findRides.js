@@ -1,21 +1,11 @@
 const axios = require('axios');
 const moment = require('moment');
+const { v4: uuidv4 } = require('uuid');
 
-const foundRides = [];
+let foundRides = [];
 
-async function findRide() {
-
-  const rideData = {
-    currentLocation: {
-      lat: '50.816',
-      long: '-0.359663'
-    },
-    destinationLocation: {
-      lat: '50.82487',
-      long: '-0.313832'
-    }
-  };
-
+async function findRide(vendors, rideData) {
+  let foundRidesCopy;
 
   const vendorApis = [
     {
@@ -60,14 +50,101 @@ async function findRide() {
         }
 
         const postData = { "uuid":"fe24a30d-205a-46dc-8ff5-855a894d0a19","latitude": parseFloat(rideData.currentLocation.lat),"longitude": parseFloat(rideData.currentLocation.long) };
-
         let waitTimeRes = await axios.post(vendor.waitTimeRoute(), postData, config);
-        let ridePriceRes = { data: 'n/a'}
+
+        const postDataPrice = {
+          "locale": "en-US",
+          "pickupLocation": {
+              "id": "ChIJB8T45XCYdUgR18SzHmUEvwI",
+              "addressLine1": "BN11 2DF",
+              "addressLine2": "Lyndhurst Rd, Worthing",
+              "provider": "google_places",
+              "locale": "en",
+              "latitude": parseFloat(rideData.currentLocation.lat),
+              "longitude": parseFloat(rideData.currentLocation.long)
+          },
+          "destination": {
+              "latitude": parseFloat(rideData.destinationLocation.lat),
+              "longitude": parseFloat(rideData.destinationLocation.long)
+          },
+          "status": {
+              "status": {
+                  "clientStatus": {
+                      "status": "Looking",
+                      "meta": {
+                          "lastModifiedTimeMs": 1584124060000,
+                          "originTimeMs": null
+                      },
+                      "lastRequestNote": null,
+                      "lastRequestMsg": null,
+                      "tripPendingRouteToDestination": null,
+                      "statusDescription": "Looking",
+                      "lastRequestType": null,
+                      "lastRequestJobUUID": ""
+                  },
+                  "eyeball": {
+                      "dynamicFares": {},
+                      "nearbyVehicles": null,
+                      "meta": {
+                          "lastModifiedTimeMs": 1584124060000,
+                          "originTimeMs": null
+                      },
+                      "reverseGeocode": {
+                          "uuid": "",
+                          "latitude": 0,
+                          "longitude": 0,
+                          "shortAddress": "",
+                          "longAddress": "",
+                          "nickname": null,
+                          "components": []
+                      },
+                      "fareSplit": null,
+                      "nearbyAssets": null
+                  },
+                  "trip": null,
+                  "city": {
+                      "cityName": "sekonditakoradi_and_cape_coast",
+                      "cityId": "1800",
+                      "countryIso2": "GH",
+                      "isEmergencyLocationSharingAvailable": false,
+                      "productsUnavailableMessage": "Unfortunately, Uber is currently unavailable in your area.",
+                      "vehicleViews": {},
+                      "vehicleViewsOrder": [],
+                      "productTiersOrder": [
+                          "SPECIAL",
+                          "RECOMMENDED",
+                          "POPULAR",
+                          "ECONOMY",
+                          "PREMIUM",
+                          "EXTRA_SEATS",
+                          "MORE"
+                      ],
+                      "productGroups": [],
+                      "meta": {
+                          "lastModifiedTimeMs": 1584124060545
+                      }
+                  },
+                  "metadata": {
+                      "targetLocationSynced": {
+                          "latitude": 0,
+                          "longitude": 0,
+                          "type": null,
+                          "ts": null
+                      },
+                      "pollingIntervalMs": 4000
+                  }
+              }
+          },
+          "profileUUID": null,
+          "profileType": null,
+          "isScheduled": false
+        };
+
+        let ridePriceRes = await axios.post(vendor.ridePriceRoute(), postDataPrice, config)
         
         // Transform the nearbyVehicles object into an array get the key and itterate through all of the nearby vehicles.
         Object.keys(waitTimeRes.data.data.status.eyeball.nearbyVehicles).forEach(async e => {
           if (waitTimeRes.data.data.status.eyeball.nearbyVehicles[e].minEta != null ) {
-            console.log(waitTimeRes.data.data.status.eyeball.nearbyVehicles[e].minEta);
             await processRides(vendor.vendor, waitTimeRes.data.data.status.eyeball.nearbyVehicles[e].minEta, ridePriceRes.data);
           }
         });
@@ -78,42 +155,63 @@ async function findRide() {
     }
   };
 
-  console.log('FOUND RIDES: ', foundRides);
+  foundRidesCopy = foundRides;
+  // Clear out the array for future requests
+  foundRides = [];
+
+  // Call the filter function & return the rides
+  return filtered = await filterRides(vendors, foundRidesCopy);
+
 }
-findRide();
 
 async function processRides(vendor, waitTimeRes, ridePriceRes) {
   switch (vendor) {
     case 'Arrow':
       foundRides.push({
-        id: 0,
+        id: uuidv4(),
         vendor: 'Arrow',
-        eta: waitTimeRes.waitTime,
-        price: ridePriceRes.prices[0].maximumPrice,
+        eta: parseInt(waitTimeRes.waitTime),
+        ridePrice: ridePriceRes.prices[0].maximumPrice.toString(),
         car: 'N/A',
         passenger: 4,
         driver: 'N/A',
         raiting: 3,
-        fastest: true
+        fastest: false
       });
       break;
     case 'Uber':
       foundRides.push({
-        id: 0,
+        id: uuidv4(),
         vendor: 'Uber',
         eta: waitTimeRes,
-        price: '🏗 In Progress',
+        ridePrice: ridePriceRes.data.estimates['10000478'].fareEstimateRange.maxFare.toString(),
         car: 'N/A',
         passenger: 4,
         driver: 'N/A',
         raiting: 3,
-        fastest: true
+        fastest: false
       });
       break;
     default:
       break;
   }
-
-  // Filter out the app vendors that the user does not have
-  
 };
+
+async function filterRides(vendors, foundRides) {
+  // Filter out the app vendors that the user does not have
+  const availableVendors = foundRides.filter(ride => vendors.includes(ride.vendor));
+
+  // Find the quickest ride within the array
+  let sortedRides = availableVendors.sort((a, b) => a.eta - b.eta);
+
+  // Set fastest to true on the fastest ride which will always be the 0 index of the array
+  sortedRides.forEach((ride, i) => {
+    if (i == 0) {
+      ride.fastest = true;
+    }
+  });
+
+  return sortedRides;
+}
+
+module.exports = findRide;

@@ -13,11 +13,12 @@ const MapView = ({ location }) => {
   // console.log('From Location Change: ', fromLocation);
 
   const { latitude, longitude } = fromLocation.coords;
+  // const { latitude: destLatitude, longitude: destLongitude } = userDestination.coords;
 
   console.log('Lat Long ----> ', latitude, longitude);
   
   let origin = { latitude: latitude, longitude: longitude };
-  let destination = { latitude: 50.822300, longitude: -0.321530 };
+  let destination = { latitude: userDestination.latitude, longitude: userDestination.longitude };
   console.log('[Context API Destination] - ', destination)
 
   console.log('[Context API Location] - ', fromLocation.coords.latitude);

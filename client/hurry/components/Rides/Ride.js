@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import Colors from "../../constants/Colors";
 import StarRaiting from "./StarRaiting";
 import {
@@ -9,19 +9,38 @@ import {
   TextInput,
   TouchableNativeFeedback
 } from "react-native";
-import RideContext from "../../context/rideContext";
+import Config from '../../constants/Enviroment';
+import axios from 'axios';
+import RideContext from  "../../context/rideContext";
+import { Linking } from 'expo';
 
 const Ride = ({ rideData }) => {
+  const { fromLocation, userDestination } = useContext(RideContext);
   const {
-    car,
-    driver,
-    eta,
-    passenger,
-    price,
-    raiting,
     vendor,
+    eta,
+    ridePrice,
+    car,
+    passenger,
+    driver,
+    raiting,
     fastest
   } = rideData;
+
+  console.log(ridePrice);
+
+  const bookRide = async () => {
+    console.log(vendor);
+    switch (vendor) {
+      case 'Uber':
+        console.log('Transfering to Uber App');
+        Linking.openURL(`uber://?client_id=${Config.UBER_CLIENT_ID}&action=setPickup&pickup[latitude]=${fromLocation.coords.latitude}&pickup[longitude]=${fromLocation.coords.longitude}&pickup[nickname]=Hurry&dropoff[latitude]=${userDestination.latitude}&dropoff[longitude]=${userDestination.longitude}&dropoff[nickname]=Hurry`)
+        break;
+    
+      default:
+        break;
+    }
+  }
 
   return (
     <>
@@ -61,7 +80,7 @@ const Ride = ({ rideData }) => {
         </View>
         <View style={styles.rideInfo}>
           <Text style={{ ...styles.detailsText, marginRight: 20 }}>
-            {price}
+            £{ridePrice}
           </Text>
           <Text style={styles.detailsText}>{passenger} Passengers</Text>
         </View>
@@ -72,7 +91,7 @@ const Ride = ({ rideData }) => {
           fastest ? Colors.bgBlue : Colors.green,
           false
         )}
-        onPress={() => console.log("book")}>
+        onPress={bookRide}>
         <View style={fastest ? styles.bookBtnFastest : styles.bookBtn}>
           <Text
             style={

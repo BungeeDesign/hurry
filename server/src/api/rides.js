@@ -36,7 +36,7 @@ router.post('/new', async (req, res, next) => {
 // @access  Private
 router.post('/find', async (req, res, next) => {
   try {
-    const rides = await findRides(req.body);
+    const rides = await findRides(req.body.vendors, req.body.ride);
     res.json(rides);
   } catch (error) {
     if (error.name === 'ValidationError') {

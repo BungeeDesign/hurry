@@ -1,24 +1,19 @@
 import React from 'react';
-import Map from 'react-native-maps';
-import Colors from "../../constants/Colors";
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
+import hurryLoader from '../../assets/animations/hurry-loader.gif';
 
 const Loader = ({}) => {
   
   return (
-    <Text style={styles.text}></Text>
+    <Image style={styles.loader} source={hurryLoader} />
   )
 };
 
 const styles = StyleSheet.create({
-  text: {
-    flex: 1,
-    marginTop: 35,
-    fontFamily: 'montserrat-semi-bold',
-    textAlign: 'center',
-    fontSize: 22,
-    color: Colors.green
-  },
+  loader: {
+    width: 400,
+    height: 400
+  }
 });
 
 export default Loader;
