@@ -1,10 +1,16 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, Platform } from 'react-native';
 
 const LocationMarker = ({}) => {
-  return (
-    <Image source={require('../../assets/animations/map-marker.webp')} />
-  )
+  if (Platform.OS === 'android') {
+    return (
+      <Image source={require('../../assets/animations/map-marker.webp')} />
+    )
+  } else {
+    return (
+      <Image source={require('../../assets/animations/marker.png')} />
+    )
+  }
 };
 
 export default LocationMarker;

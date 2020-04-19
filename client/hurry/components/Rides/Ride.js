@@ -7,7 +7,9 @@ import {
   Text,
   Image,
   TextInput,
-  TouchableNativeFeedback
+  TouchableNativeFeedback,
+  TouchableHighlight,
+  Platform
 } from "react-native";
 import Config from '../../constants/Enviroment';
 import axios from 'axios';
@@ -42,6 +44,7 @@ const Ride = ({ rideData }) => {
     }
   }
 
+  if (Platform.OS === 'android') {
   return (
     <>
       {fastest && (
@@ -104,6 +107,70 @@ const Ride = ({ rideData }) => {
       </TouchableNativeFeedback>
     </>
   );
+  } else {
+    return (
+      <>
+        {fastest && (
+          <View style={styles.fastestRideBadge}>
+            <Text style={styles.fastestRideText}>Fastest Ride</Text>
+          </View>
+        )}
+        <View style={styles.rideContainer}>
+          <View style={styles.headingContainer}>
+            <Text style={{ ...styles.rideHeading, color: "white" }}>
+              {vendor}
+            </Text>
+            <Text style={{ ...styles.rideHeading, color: Colors.green }}>
+              {eta} Minutes
+            </Text>
+  
+            <View style={styles.driverProfileContainer}>
+              <View style={styles.driverProfile}>
+                <Text style={{ ...styles.detailsText, marginTop: 10 }}>
+                  {driver}
+                </Text>
+                <StarRaiting raiting={raiting} />
+              </View>
+              <Image
+                style={styles.driverProfileImage}
+                source={{
+                  uri:
+                    "https://pbs.twimg.com/profile_images/969073897189523456/rSuiu_Hr.jpg"
+                }}
+              />
+            </View>
+          </View>
+          <View style={styles.detailsContainer}>
+            <Text style={styles.detailsText}>{car}</Text>
+            <View style={styles.hairLine} />
+          </View>
+          <View style={styles.rideInfo}>
+            <Text style={{ ...styles.detailsText, marginRight: 20 }}>
+              £{ridePrice}
+            </Text>
+            <Text style={styles.detailsText}>{passenger} Passengers</Text>
+          </View>
+        </View>
+        <TouchableHighlight
+          style={styles.bookBtnContainer}
+          background={TouchableNativeFeedback.Ripple(
+            fastest ? Colors.bgBlue : Colors.green,
+            false
+          )}
+          onPress={bookRide}>
+          <View style={fastest ? styles.bookBtnFastest : styles.bookBtn}>
+            <Text
+              style={
+                (styles.btnText, { color: fastest ? Colors.bgBlue : "white" })
+              }
+            >
+              Book
+            </Text>
+          </View>
+        </TouchableHighlight>
+      </>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

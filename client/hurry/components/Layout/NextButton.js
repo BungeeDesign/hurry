@@ -1,10 +1,11 @@
 import React from 'react';
 import Map from 'react-native-maps';
 import Colors from "../../constants/Colors";
-import { StyleSheet, View, TouchableNativeFeedback } from 'react-native';
+import { StyleSheet, View, TouchableNativeFeedback, TouchableHighlight, Platform } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 const NextButton = ({onPress}) => {
+  if (Platform.OS === 'android') {
   return (
     <TouchableNativeFeedback style={styles.nativeFeedback} useForeground={true}  background={TouchableNativeFeedback.Ripple(Colors.green, false)} onPress={onPress}>
       <View style={styles.button}>
@@ -12,6 +13,15 @@ const NextButton = ({onPress}) => {
       </View>
     </TouchableNativeFeedback>
   )
+  } else {
+    return (
+      <TouchableHighlight style={styles.nativeFeedback} useForeground={true}  background={TouchableNativeFeedback.Ripple(Colors.green, false)} onPress={onPress}>
+        <View style={styles.button}>
+            <AntDesign name="arrowright" size={25} color='white' />
+        </View>
+      </TouchableHighlight>
+    )
+  }
 };
 
 const styles = StyleSheet.create({

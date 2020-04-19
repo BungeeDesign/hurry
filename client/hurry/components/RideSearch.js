@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import Colors from "../constants/Colors";
 import HeaderText from "../components/Layout/HeaderText";
-import { StyleSheet, View, Text, TextInput, TouchableNativeFeedback } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableNativeFeedback, TouchableOpacity, Platform } from 'react-native';
 import RideContext from  "../context/rideContext";
 
 const RideSearch = ({ navigation }) => {
@@ -24,20 +24,37 @@ const RideSearch = ({ navigation }) => {
     navigation.navigate('RidesScreen', {name: 'Jane'});
   };
 
-  return (
-    <>
-      <View style={styles.searchContainer}>
-        <HeaderText title='Find a ride' />
-        <TextInput style={styles.pickupInput} placeholder='Current Location' placeholderTextColor={Colors.green} onChangeText={(text) => setUserFromLocation(text)} onSubmitEditing={getEnteredUserLocation} onEndEditing={getEnteredUserLocation}/>
-        <TextInput style={styles.dropOffInput} placeholder='Destination' placeholderTextColor={Colors.green} onChangeText={(text) => setUserDestination(text)} onSubmitEditing={setEnteredUserDestination}/>
-        <TouchableNativeFeedback style={styles.searchBtnContainer} background={TouchableNativeFeedback.Ripple(Colors.green, false)} onPress={findRide}>
-          <View style={styles.searchBtn}>
-            <Text style={styles.btnText}>Find</Text>
-          </View>
-        </TouchableNativeFeedback>
-      </View>
-    </>
-  )
+  if (Platform.OS === 'android') {
+    return (
+      <>
+        <View style={styles.searchContainer}>
+          <HeaderText title='Find a ride' />
+          <TextInput style={styles.pickupInput} placeholder='Current Location' placeholderTextColor={Colors.green} onChangeText={(text) => setUserFromLocation(text)} onSubmitEditing={getEnteredUserLocation} onEndEditing={getEnteredUserLocation}/>
+          <TextInput style={styles.dropOffInput} placeholder='Destination' placeholderTextColor={Colors.green} onChangeText={(text) => setUserDestination(text)} onSubmitEditing={setEnteredUserDestination}/>
+          <TouchableNativeFeedback style={styles.searchBtnContainer} background={TouchableNativeFeedback.Ripple(Colors.green, false)} onPress={findRide}>
+            <View style={styles.searchBtn}>
+              <Text style={styles.btnText}>Find</Text>
+            </View>
+          </TouchableNativeFeedback>
+        </View>
+      </>
+    )
+  } else {
+    return (
+      <>
+        <View style={styles.searchContainer}>
+          <HeaderText title='Find a ride' />
+          <TextInput style={styles.pickupInput} placeholder='Current Location' placeholderTextColor={Colors.green} onChangeText={(text) => setUserFromLocation(text)} onSubmitEditing={getEnteredUserLocation} onEndEditing={getEnteredUserLocation}/>
+          <TextInput style={styles.dropOffInput} placeholder='Destination' placeholderTextColor={Colors.green} onChangeText={(text) => setUserDestination(text)} onSubmitEditing={setEnteredUserDestination}/>
+          <TouchableOpacity style={styles.searchBtnContainer} onPress={findRide}>
+            <View style={styles.searchBtn}>
+              <Text style={styles.btnText}>Find</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </>
+    )
+  }
 };
 
 const styles = StyleSheet.create({

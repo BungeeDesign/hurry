@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import Colors from "../../constants/Colors";
-import { StyleSheet, View, Text, TouchableNativeFeedback, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Text, TouchableNativeFeedback, TouchableOpacity, Platform } from 'react-native';
 import RideContext from  "../../context/rideContext";
 
 let apps = [];
@@ -23,13 +23,23 @@ const Bubble = ({vendor, onPress}) => {
     setisVendorSelected(!isVendorSelected);
   };
 
-  return (
-    <TouchableNativeFeedback style={styles.nativeFeedback} useForeground={true}  background={TouchableNativeFeedback.Ripple(Colors.bgBlue, false)} onPress={onPress, handleSelect}>
-      <View style={{...styles.circle, backgroundColor: isVendorSelected ? Colors.green : Colors.bgBlue}}>
-        <Text style={styles.circleText}>{vendor}</Text>
-      </View>
-    </TouchableNativeFeedback>
-  )
+  if (Platform.OS === 'android') {
+    return (
+      <TouchableNativeFeedback style={styles.nativeFeedback} useForeground={true}  background={TouchableNativeFeedback.Ripple(Colors.bgBlue, false)} onPress={onPress, handleSelect}>
+        <View style={{...styles.circle, backgroundColor: isVendorSelected ? Colors.green : Colors.bgBlue}}>
+          <Text style={styles.circleText}>{vendor}</Text>
+        </View>
+      </TouchableNativeFeedback>
+    )
+  } else {
+    return (
+      <TouchableOpacity style={styles.nativeFeedback} onPress={onPress, handleSelect}>
+        <View style={{...styles.circle, backgroundColor: isVendorSelected ? Colors.green : Colors.bgBlue}}>
+          <Text style={styles.circleText}>{vendor}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
 };
 
 const styles = StyleSheet.create({
