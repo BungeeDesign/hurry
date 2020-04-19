@@ -11,10 +11,10 @@ const middlewares = require('./middlewares');
 const app = express();
 
 // Connect to MongoDB (Atlas)
-mongoose.connect(process.env.DATABASE_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// mongoose.connect(process.env.DATABASE_URL, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
 app.use(morgan('common'));
 app.use(helmet());

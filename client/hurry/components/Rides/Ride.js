@@ -62,19 +62,7 @@ const Ride = ({ rideData }) => {
           </Text>
 
           <View style={styles.driverProfileContainer}>
-            <View style={styles.driverProfile}>
-              <Text style={{ ...styles.detailsText, marginTop: 10 }}>
-                {driver}
-              </Text>
               <StarRaiting raiting={raiting} />
-            </View>
-            <Image
-              style={styles.driverProfileImage}
-              source={{
-                uri:
-                  "https://pbs.twimg.com/profile_images/969073897189523456/rSuiu_Hr.jpg"
-              }}
-            />
           </View>
         </View>
         <View style={styles.detailsContainer}>
@@ -211,7 +199,9 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   driverProfileContainer: {
-    flex: 1
+    flex: 1,
+    position: "absolute",
+    marginLeft: 295
   },
   driverProfile: {
     flex: 1,
