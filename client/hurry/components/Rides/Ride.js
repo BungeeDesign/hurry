@@ -12,7 +12,6 @@ import {
   Platform
 } from "react-native";
 import Config from '../../constants/Enviroment';
-import axios from 'axios';
 import RideContext from  "../../context/rideContext";
 import { Linking } from 'expo';
 
