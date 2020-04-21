@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import Colors from "../constants/Colors";
 import {
   StyleSheet,
@@ -46,8 +46,8 @@ const runTiming = (clock) => {
   };
   const config = {
     toValue: new Value(1),
-    duration: 1500,
-    easing: Easing.bounce
+    duration: 4500,
+    easing: Easing.linear
   };
   return block([
     cond(
@@ -60,7 +60,7 @@ const runTiming = (clock) => {
       set(state.frameTime, 0),
       set(state.time, 0),
       // Enable for looping
-      // set(config.toValue, cond(eq(state.position, 1), 0, 1))
+      set(config.toValue, cond(eq(state.position, 1), 0, 1))
     ]),
     state.position
   ]);
@@ -74,6 +74,7 @@ const OnboardingScreen = ({navigation}) => {
   const { userApps, setLocation } = useContext(RideContext);
   const scrollRef = useRef();
 
+  // Create a vendors object can be later moved to the API to dynamiclly add more
   const vendors = [
     {
       vendorName: 'Arrow',
@@ -111,7 +112,7 @@ const OnboardingScreen = ({navigation}) => {
       ]),
     [clock, isPlaying, progress]
   );
-
+  
   const onNext = () => {
     scrollRef.current.scrollTo({
       animated: true,
@@ -190,22 +191,28 @@ const OnboardingScreen = ({navigation}) => {
               const start = i * delta;
               const end = start + delta;
 
-              const opacity = interpolate(progress, {
+              const rotate = interpolate(progress, {
                 inputRange: [start, end],
-                outputRange: [0, 1],
+                outputRange: [0, 0.2],
                 extrapolate: Extrapolate.CLAMP
               });
 
-              const scale = interpolate(progress, {
+              const translateX = interpolate(progress, {
                 inputRange: [start, end],
-                outputRange: [0, 1],
+                outputRange: [vendorName.pos[0], vendorName.pos[0] + 10],
+                extrapolate: Extrapolate.EXTEND
+              });
+
+              const translateY = interpolate(progress, {
+                inputRange: [start, end],
+                outputRange: [vendorName.pos[1], vendorName.pos[1] + 15],
                 extrapolate: Extrapolate.CLAMP
               });
 
               return (
                 <Animated.View
                   key={i}
-                  style={[styles.animatedBubble, { opacity, transform: [{ scale, translateX: vendorName.pos[0], translateY: vendorName.pos[1] }] }]}
+                  style={[styles.animatedBubble, { transform: [{ translateX, translateY, rotate }] }]}
                 >
                   <Bubble vendor={vendorName.vendorName} onPress={() => selectVendor(vendorName.vendorName)} />
                 </Animated.View>
@@ -268,7 +275,8 @@ const styles = StyleSheet.create({
   rideAppsContainer: {},
   animatedBubble: {
     width: 100,
-    height: 100
+    height: 100,
+    opacity: 1
   }
 });
 
