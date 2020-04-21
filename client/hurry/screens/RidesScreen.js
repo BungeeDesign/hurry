@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Colors from "../constants/Colors";
-import { FlatList, StyleSheet, View, AsyncStorage } from 'react-native';
+import { FlatList, StyleSheet, View, AsyncStorage, Alert } from 'react-native';
 import axios from 'axios';
 import HeaderText from "../components/Layout/HeaderText";
 import Ride from '../components/Rides/Ride';
 import RideContext from  "../context/rideContext";
 import Loader from '../components/Layout/Loader';
 
-const RidesScreen = ()  => {
+const RidesScreen = ({ navigation })  => {
   const { fromLocation, userDestination } = useContext(RideContext);
   [rides, setRides] = useState([]);
 
@@ -28,10 +28,21 @@ const RidesScreen = ()  => {
       };
 
       try {
-        const res = await axios.post('http://192.168.1.59:1255/api/rides/find', data);
+        const config = {
+          timeout: 4000
+        }
+        const res = await axios.post('http://192.168.1.59:1255/api/rides/find', data, config);
         setRides(res.data);
       } catch (error) {
         console.log('[Rides Request Error] -', error);
+        Alert.alert(
+          'Oops an error has occured',
+          'There was an error requesting the rides. Please try again later.',
+          [
+            {text: 'OK', onPress: () => navigation.navigate('FindRidesScreen')},
+          ],
+          {cancelable: false},
+        );
       }
     })();
   }, [])

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import Colors from "../constants/Colors";
 import HeaderText from "../components/Layout/HeaderText";
-import { StyleSheet, View, Text, TextInput, TouchableNativeFeedback, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableNativeFeedback, Alert } from 'react-native';
 import RideContext from  "../context/rideContext";
 
 const RideSearch = ({ navigation }) => {
@@ -20,8 +20,20 @@ const RideSearch = ({ navigation }) => {
   };
 
   const findRide = () => {
-    // Switch to RidesScreen and start request for ride search
-    navigation.navigate('RidesScreen', {name: 'Jane'});
+    console.log('Finding Rides: ', userEnteredDestination);
+    if (userEnteredDestination == '' || userEnteredDestination == null) {
+      Alert.alert(
+        'Enter a destination',
+        'Please enter your destination address',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        {cancelable: false},
+      );
+    } else {
+      // Switch to RidesScreen and start request for ride search
+      navigation.navigate('RidesScreen', {name: 'Jane'});
+    }
   };
 
   return (
