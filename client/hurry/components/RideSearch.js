@@ -28,8 +28,8 @@ const RideSearch = ({ navigation }) => {
     <>
       <View style={styles.searchContainer}>
         <HeaderText title='Find a ride' />
-        <TextInput style={styles.pickupInput} placeholder='Current Location' placeholderTextColor={Colors.green} onChangeText={(text) => setUserFromLocation(text)} onSubmitEditing={getEnteredUserLocation} onEndEditing={getEnteredUserLocation} value={userFromLocation} testID="currentLocation" />
-        <TextInput style={styles.dropOffInput} placeholder='Destination' placeholderTextColor={Colors.green} onChangeText={(text) => setUserDestination(text)} onSubmitEditing={setEnteredUserDestination} value={userEnteredDestination} testID='destinationLocation' />
+        <TextInput style={styles.pickupInput} placeholder='Current Location' placeholderTextColor={Colors.green} onChangeText={(text) => setUserFromLocation(text)} onSubmitEditing={getEnteredUserLocation} onEndEditing={getEnteredUserLocation} />
+        <TextInput style={styles.dropOffInput} placeholder='Destination' placeholderTextColor={Colors.green} onChangeText={(text) => setUserDestination(text)} onSubmitEditing={setEnteredUserDestination} />
         <TouchableNativeFeedback style={styles.searchBtnContainer} background={TouchableNativeFeedback.Ripple(Colors.green, false)} onPress={findRide} testID='searchBtn'>
           <View style={styles.searchBtn}>
             <Text style={styles.btnText}>Find</Text>
